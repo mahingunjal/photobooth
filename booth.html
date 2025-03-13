@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Booth - Take Photos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background-color: #f0f8ff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+        
+        .dark-theme {
+            background-color: #1a1a2e;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath fill-rule='evenodd' d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0l28-28v2L54 40h-2zm4 0l24-24v2L58 40h-2zm4 0l20-20v2L62 40h-2zm4 0l16-16v2L66 40h-2zm4 0l12-12v2L70 40h-2zm4 0l8-8v2l-6 6h-2zm4 0l4-4v2l-2 2h-2z'/%3E%3C/g%3E%3C/svg%3E");
+            background-attachment: fixed;
+        }
+
+        .booth-container {
+            background: linear-gradient(45deg, rgba(147, 86, 220, 0.8) 0%, rgba(65, 105, 225, 0.7) 50%, rgba(72, 209, 204, 0.6) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .booth-container::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,.3)' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-size: 80px 80px;
+            z-index: -1;
+            opacity: 0.8;
+            animation: floatPattern 60s linear infinite;
+        }
+        
+        .booth-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-size: 50px 50px;
+            z-index: -1;
+            opacity: 0.6;
+            animation: floatPatternReverse 45s linear infinite;
+        }
+
+        @keyframes floatPattern {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 80px 80px;
+            }
+        }
+
+        @keyframes floatPatternReverse {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: -50px -50px;
+            }
+        }
+
+        .dark-theme .booth-container {
+            background: linear-gradient(45deg, rgba(75, 0, 130, 0.8) 0%, rgba(0, 255, 213, 0.7) 50%, rgba(0, 0, 128, 0.6) 100%);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dark-theme .booth-container::before {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='rgba(255,255,255,.2)' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            animation: floatPattern 60s linear infinite;
+        }
+        
+        .dark-theme .booth-container::after {
+            background-image: url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.15'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.4;
+            animation: floatPatternReverse 45s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-camera-retro"></i> PhotoBooth
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#pricing">Pricing</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact">Contact</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <button id="share-website-btn" class="btn btn-outline-primary">
+                            <i class="fas fa-share-alt"></i> Share Website
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="booth-container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="text-center mb-4">Photo Booth</h2>
+                    <div id="webcam-container">
+                        <video id="webcam" autoplay playsinline></video>
+                        <div id="countdown" class="countdown" style="display: none;">3</div>
+                        <div id="stickers-overlay"></div>
+                        <div id="text-overlay"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row controls">
+                <div class="col-12 text-center">
+                    <button id="capture-btn" class="btn btn-primary btn-lg me-2">
+                        <i class="fas fa-camera"></i> Capture
+                    </button>
+                    <button id="strip-btn" class="btn btn-success me-2">
+                        <i class="fas fa-images"></i> Photo Strip
+                    </button>
+                    <button id="filter-btn" class="btn btn-info me-2">
+                        <i class="fas fa-magic"></i> Filters
+                    </button>
+                    <button id="sticker-btn" class="btn btn-warning me-2">
+                        <i class="fas fa-smile"></i> Stickers
+                    </button>
+                    <button id="text-btn" class="btn btn-secondary me-2">
+                        <i class="fas fa-font"></i> Add Text
+                    </button>
+                    <button id="rotate-btn" class="btn btn-dark">
+                        <i class="fas fa-sync"></i> Rotate
+                    </button>
+                </div>
+            </div>
+
+            <div class="filter-options" style="display: none;">
+                <h5 class="text-center mb-3">Basic Filters</h5>
+                <div class="basic-filters mb-4">
+                    <button class="btn btn-outline-primary active" data-filter="normal" data-bs-toggle="tooltip" title="No filter">Normal</button>
+                    <button class="btn btn-outline-primary" data-filter="grayscale" data-bs-toggle="tooltip" title="Black and white effect">Grayscale</button>
+                    <button class="btn btn-outline-primary" data-filter="sepia" data-bs-toggle="tooltip" title="Vintage brown tint">Sepia</button>
+                    <button class="btn btn-outline-primary" data-filter="invert" data-bs-toggle="tooltip" title="Invert all colors">Invert</button>
+                    <button class="btn btn-outline-primary" data-filter="vintage" data-bs-toggle="tooltip" title="Faded retro look">Vintage</button>
+                    <button class="btn btn-outline-primary" data-filter="blueprint" data-bs-toggle="tooltip" title="Blueprint style blue tint">Blueprint</button>
+                    <button class="btn btn-outline-primary" data-filter="neon" data-bs-toggle="tooltip" title="Bright neon colors">Neon</button>
+                    <button class="btn btn-outline-primary" data-filter="pastel" data-bs-toggle="tooltip" title="Soft pastel colors">Pastel</button>
+                    <button class="btn btn-outline-primary" data-filter="dramatic" data-bs-toggle="tooltip" title="High contrast dramatic look">Dramatic</button>
+                </div>
+                
+                <h5 class="text-center mb-3">Fun Filters</h5>
+                <div class="fun-filters">
+                    <button class="btn btn-outline-danger" data-filter="rainbow" data-bs-toggle="tooltip" title="Rainbow gradient overlay">Rainbow</button>
+                    <button class="btn btn-outline-danger" data-filter="pixelate" data-bs-toggle="tooltip" title="Pixelated retro effect">Pixelate</button>
+                    <button class="btn btn-outline-danger" data-filter="cartoon" data-bs-toggle="tooltip" title="Cartoon/comic book style">Cartoon</button>
+                    <button class="btn btn-outline-danger" data-filter="thermal" data-bs-toggle="tooltip" title="Thermal camera effect">Thermal</button>
+                    <button class="btn btn-outline-danger" data-filter="mirror" data-bs-toggle="tooltip" title="Mirror half of the image">Mirror</button>
+                    <button class="btn btn-outline-danger" data-filter="glitch" data-bs-toggle="tooltip" title="Digital glitch effect">Glitch</button>
+                </div>
+            </div>
+
+            <div class="stickers-panel" style="display: none;">
+                <img src="https://cdn-icons-png.flaticon.com/128/742/742751.png" class="sticker-item" data-sticker="sunglasses">
+                <img src="https://cdn-icons-png.flaticon.com/128/742/742920.png" class="sticker-item" data-sticker="hat">
+                <img src="https://cdn-icons-png.flaticon.com/128/742/742923.png" class="sticker-item" data-sticker="mustache">
+                <img src="https://cdn-icons-png.flaticon.com/128/742/742922.png" class="sticker-item" data-sticker="lips">
+                <img src="https://cdn-icons-png.flaticon.com/128/742/742752.png" class="sticker-item" data-sticker="crown">
+            </div>
+
+            <div class="text-overlay-panel" style="display: none;">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="text-input" placeholder="Enter text...">
+                    <button class="btn btn-primary" id="add-text-btn">Add</button>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="text-color" class="form-label">Text Color</label>
+                        <input type="color" class="form-control form-control-color" id="text-color" value="#ffffff">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="text-size" class="form-label">Text Size</label>
+                        <input type="range" class="form-range" id="text-size" min="12" max="72" value="24">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="preview-container" id="preview-container"></div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <button id="download-btn" class="btn btn-success me-2" disabled>
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button id="email-btn" class="btn btn-info me-2" disabled>
+                        <i class="fas fa-envelope"></i> Email
+                    </button>
+                    <button id="share-btn" class="btn btn-primary me-2" disabled>
+                        <i class="fas fa-share-alt"></i> Share Photo
+                    </button>
+                    <button id="delete-btn" class="btn btn-danger" disabled>
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Modal -->
+    <div class="modal fade" id="emailModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Send Photo by Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="email-form">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="email" value="gunjalmahin@gmail.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="subject" value="Check out my photo booth picture!">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Message (optional)</label>
+                            <textarea class="form-control" id="email-message" rows="3">Here's a photo I captured using the PhotoBooth app!</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Website Modal -->
+    <div class="modal fade" id="shareWebsiteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Share This Website</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Share this amazing photo booth with your friends and family!</p>
+                    
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="share-url" value="" readonly>
+                        <button class="btn btn-outline-primary" id="copy-url-btn">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <button id="mobile-share-btn" class="btn btn-primary w-100" onclick="shareWithNative()">
+                                <i class="fas fa-share-alt"></i> Share on Your Device
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button id="show-qr-btn" class="btn btn-dark w-100" onclick="toggleQRCode()">
+                                <i class="fas fa-qrcode"></i> Show QR Code
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="qr-code-container" class="text-center mb-3" style="display: none;">
+                        <div id="qrcode" class="d-inline-block p-2 bg-white rounded"></div>
+                        <p class="small text-muted mt-2">Scan this QR code with a mobile device</p>
+                    </div>
+                    
+                    <p class="text-center mb-2">Or share via:</p>
+                    
+                    <div class="d-flex justify-content-center flex-wrap mt-2">
+                        <a href="#" class="btn btn-primary m-1 share-btn" data-platform="facebook">
+                            <i class="fab fa-facebook-f"></i> Facebook
+                        </a>
+                        <a href="#" class="btn btn-info m-1 share-btn" data-platform="twitter">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="#" class="btn btn-success m-1 share-btn" data-platform="whatsapp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="#" class="btn btn-secondary m-1 share-btn" data-platform="linkedin">
+                            <i class="fab fa-linkedin-in"></i> LinkedIn
+                        </a>
+                        <a href="#" class="btn btn-danger m-1 share-btn" data-platform="email">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <p class="small text-muted">The shared link will automatically start the photo booth for your friends!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Toggle Button -->
+    <button id="theme-toggle" class="btn btn-sm">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Footer Credit -->
+    <div class="footer-credit">
+        <p>Created by Mahin Gunjal</p>
+        <div class="footer-links">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy</a> | 
+            <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms</a>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Privacy Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h2>Privacy Policy for PhotoBooth</h2>
+                    <p><strong>Last Updated: October 2023</strong></p>
+                    
+                    <h3>1. Introduction</h3>
+                    <p>Welcome to PhotoBooth. We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website and tell you about your privacy rights and how the law protects you.</p>
+                    
+                    <h3>2. Data We Collect</h3>
+                    <p>We may collect, use, store and transfer different kinds of personal data about you which we have grouped together as follows:</p>
+                    <ul>
+                        <li><strong>Identity Data</strong> includes first name, last name, username or similar identifier.</li>
+                        <li><strong>Contact Data</strong> includes email address and telephone numbers.</li>
+                        <li><strong>Technical Data</strong> includes internet protocol (IP) address, browser type and version, time zone setting and location, browser plug-in types and versions, operating system and platform, and other technology on the devices you use to access this website.</li>
+                        <li><strong>Usage Data</strong> includes information about how you use our website and services.</li>
+                        <li><strong>Media Data</strong> includes photos and images captured using our photo booth service.</li>
+                    </ul>
+                    
+                    <h3>3. How We Use Your Data</h3>
+                    <p>We will only use your personal data when the law allows us to. Most commonly, we will use your personal data in the following circumstances:</p>
+                    <ul>
+                        <li>To provide you with the photo booth service.</li>
+                        <li>To respond to your inquiries.</li>
+                        <li>To improve our website and services.</li>
+                        <li>To send you marketing communications if you have opted in to receive them.</li>
+                    </ul>
+                    
+                    <h3>4. Data Security</h3>
+                    <p>We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorized way, altered or disclosed.</p>
+                    
+                    <h3>5. Your Legal Rights</h3>
+                    <p>Under certain circumstances, you have rights under data protection laws in relation to your personal data, including the right to:</p>
+                    <ul>
+                        <li>Request access to your personal data.</li>
+                        <li>Request correction of your personal data.</li>
+                        <li>Request erasure of your personal data.</li>
+                        <li>Object to processing of your personal data.</li>
+                        <li>Request restriction of processing your personal data.</li>
+                        <li>Request transfer of your personal data.</li>
+                        <li>Right to withdraw consent.</li>
+                    </ul>
+                    
+                    <h3>6. Contact Us</h3>
+                    <p>If you have any questions about this privacy policy or our privacy practices, please contact us at:</p>
+                    <p>Email: info@photobooth.com</p>
+                    <p>Phone: +91 9876543210</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Terms of Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h2>Terms and Conditions for PhotoBooth</h2>
+                    <p><strong>Last Updated: October 2023</strong></p>
+                    
+                    <h3>1. Introduction</h3>
+                    <p>These terms and conditions govern your use of the PhotoBooth website and services. By using our website and services, you accept these terms and conditions in full. If you disagree with these terms and conditions or any part of them, you must not use our website or services.</p>
+                    
+                    <h3>2. License to Use Website</h3>
+                    <p>You may view, download, and print pages from the website for your own personal use, subject to the restrictions set out below and elsewhere in these terms and conditions.</p>
+                    
+                    <h3>3. Acceptable Use</h3>
+                    <p>You must not:</p>
+                    <ul>
+                        <li>Use our website in any way or take any action that causes, or may cause, damage to the website or impairment of the performance, availability, or accessibility of the website.</li>
+                        <li>Use our website in any way that is unlawful, illegal, fraudulent, or harmful, or in connection with any unlawful, illegal, fraudulent, or harmful purpose or activity.</li>
+                        <li>Use our website to copy, store, host, transmit, send, use, publish, or distribute any material which consists of (or is linked to) any spyware, computer virus, Trojan horse, worm, keystroke logger, rootkit, or other malicious computer software.</li>
+                        <li>Conduct any systematic or automated data collection activities on or in relation to our website without our express written consent.</li>
+                    </ul>
+                    
+                    <h3>4. Intellectual Property Rights</h3>
+                    <p>We, or our licensors, own the intellectual property rights in the website and material on the website. All these intellectual property rights are reserved.</p>
+                    
+                    <h3>5. Limitations of Liability</h3>
+                    <p>We will not be liable to you in respect of any losses arising out of any event or events beyond our reasonable control. We will not be liable to you in respect of any business losses, including (without limitation) loss of or damage to profits, income, revenue, use, production, anticipated savings, business, contracts, commercial opportunities or goodwill.</p>
+                    
+                    <h3>6. Breaches of These Terms and Conditions</h3>
+                    <p>Without prejudice to our other rights under these terms and conditions, if you breach these terms and conditions in any way, we may take such action as we deem appropriate to deal with the breach, including suspending your access to the website, prohibiting you from accessing the website, blocking computers using your IP address from accessing the website, and/or bringing court proceedings against you.</p>
+                    
+                    <h3>7. Variation</h3>
+                    <p>We may revise these terms and conditions from time to time. The revised terms and conditions shall apply to the use of our website from the date of publication of the revised terms and conditions on our website.</p>
+                    
+                    <h3>8. Entire Agreement</h3>
+                    <p>These terms and conditions, together with our privacy policy, constitute the entire agreement between you and us in relation to your use of our website and services, and supersede all previous agreements in respect of your use of this website.</p>
+                    
+                    <h3>9. Law and Jurisdiction</h3>
+                    <p>These terms and conditions will be governed by and construed in accordance with the laws of India, and any disputes relating to these terms and conditions will be subject to the exclusive jurisdiction of the courts of India.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script src="booth.js"></script>
+</body>
+</html> 
